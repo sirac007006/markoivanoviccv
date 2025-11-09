@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marko Ivanović - Web Developer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            line-height: 1.6;
+            color: #e4e4e7;
+            background: #0a0a0f;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(88, 28, 135, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 80px 50px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeInDown 0.8s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-image {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            margin: 0 auto 30px;
+            border: 4px solid #3b82f6;
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.4);
+            object-fit: cover;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            to {
+                left: 100%;
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .tagline {
+            font-size: 1.4em;
+            color: #a1a1aa;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .intro {
+            font-size: 1.05em;
+            color: #d4d4d8;
+            max-width: 850px;
+            margin: 25px auto;
+            line-height: 1.8;
+        }
+
+        .section {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 50px;
+            border-radius: 24px;
+            margin-bottom: 40px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+            animation: fadeInUp 0.8s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px -12px rgba(59, 130, 246, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            font-size: 2.4em;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 35px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h3 {
+            font-size: 1.5em;
+            color: #fbbf24;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+
+        .experience-item, .project-item {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: rgba(30, 30, 45, 0.5);
+            border-radius: 16px;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .experience-item::before, .project-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+            transition: width 0.4s ease;
+        }
+
+        .experience-item:hover::before, .project-item:hover::before {
+            width: 100%;
+        }
+
+        .experience-item:hover, .project-item:hover {
+            transform: translateX(10px);
+            border-left-color: #8b5cf6;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .date {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 0.95em;
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #0a0a0f;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .skill-category {
+            background: rgba(30, 30, 45, 0.5);
+            padding: 30px;
+            border-radius: 16px;
+            border-top: 3px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-5px);
+            border-top-color: #8b5cf6;
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+
+        .skill-category h4 {
+            color: #e4e4e7;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            font-weight: 600;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .skill-tag {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .skill-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .qualities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .quality-item {
+            background: rgba(30, 30, 45, 0.5);
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s ease;
+        }
+
+        .quality-item:hover {
+            transform: translateX(8px);
+            border-left-color: #34d399;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+        }
+
+        .quality-item strong {
+            color: #10b981;
+            font-size: 1.2em;
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .project-link {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .project-link::after {
+            content: ' →';
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .project-link:hover {
+            color: #60a5fa;
+        }
+
+        .project-link:hover::after {
+            opacity: 1;
+        }
+
+        .emoji {
+            font-size: 1.4em;
+            margin-right: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px 20px;
+            color: #a1a1aa;
+            font-size: 1.1em;
+            position: relative;
+        }
+
+        .contact-info {
+            background: rgba(20, 20, 30, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 24px;
+            margin-top: 30px;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.4);
+        }
+
+        .contact-info h3 {
+            color: #e4e4e7;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .contact-info a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            color: #60a5fa;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .tagline {
+                font-size: 1.1em;
+            }
+
+            h2 {
+                font-size: 1.9em;
+            }
+
+            .section, header {
+                padding: 30px;
+            }
+
+            .skills-grid, .qualities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+            width: 0%;
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+    <div class="background-pattern"></div>
+    
+    <div class="container">
+        <header>
+            <img src="slika.jpg" alt="Marko Ivanović" class="profile-image" onerror="this.style.display='none'">
+            <h1>Marko Ivanović</h1>
+            <p class="tagline">Web Developer | Frontend & Backend</p>
+            <p class="intro">
+                Zovem se Marko Ivanović i bavim se razvojem web sajtova. Rođen sam 7. juna 2008. godine u Podgorici, gdje i danas živim. Trenutno pohađam srednju elektrotehničku školu, smjer <em>Elektrotehničar za razvoj veb i mobilnih aplikacija</em>, gdje aktivno usavršavam znanja iz oblasti web developmenta.
+            </p>
+            <p class="intro">
+                Kao samouki i motivisani developer, iza sebe imam više završenih projekata i praktičnog iskustva u radu sa klijentima. Tokom prethodnih godina razvijao sam profesionalne web sajtove koristeći HTML, CSS, JavaScript, PHP, Bootstrap, kao i alate za backend poput Laravel, Node.js i Express, uz baze podataka kao što su PostgreSQL i MySQL.
+            </p>
+        </header>
+
+        <div class="section">
+            <h2><span class="emoji">💼</span>Iskustvo</h2>
+            
+            <div class="experience-item">
+                <h3>Freelance Web Developer</h3>
+                <p class="date">Ljeto 2024 - Sadašnjost</p>
+                <p>Aktivno radim kao freelance web developer. Kroz rad sa stvarnim klijentima sam stekao praktično iskustvo u izradi modernih, responzivnih i funkcionalnih web sajtova. Komuniciram direktno sa klijentima, razumijem njihove potrebe, predlažem rješenja i samostalno izrađujem kompletne sajtove -- od dizajna do implementacije i postavljanja na hosting.</p>
+                <p style="margin-top: 15px;">📷 Instagram: <a href="https://instagram.com/webkutak" class="project-link" target="_blank">@webkutak</a> - Pogledajte naše radove</p>
+            </div>
+
+            <div class="experience-item">
+                <h3>ICT Cortex - Praksa</h3>
+                <p class="date">Oktobar 2024 - Oktobar 2025</p>
+                <p>Član tima za praksu gdje aktivno učim moderni frontend framework <strong>React.js</strong>, radim na timskim projektima i prolazim kroz realne scenarije iz IT industrije. Ova praksa mi omogućava da dodatno unaprijedim znanje iz JavaScript-a, rada sa komponentama, API komunikacije, kao i kolaboracije u timu koristeći Git.</p>
+                <span class="achievement-badge">🏆 3. Mesto na ICT Cortex Takmičenju 2025</span>
+            </div>
+
+            <div class="experience-item">
+                <h3>Voli 8 - Sezonski rad</h3>
+                <p class="date">Jun - Septembar 2024</p>
+                <p>Sezonski posao u Petrovcu gdje sam bio zadužen za dopunu sokova i održavanje urednosti odjela.</p>
+            </div>
+
+            <div class="experience-item">
+                <h3>ITS Podgorica</h3>
+                <p class="date">Jun - Septembar 2023</p>
+                <p>Stekao sam dodatno iskustvo u organizaciji i radu u timu.</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="emoji">🚀</span>Projekti</h2>
+            
+            <div class="project-item">
+                <h3><span class="emoji">🎯</span>Program za Lovački savez Crne Gore</h3>
+                <p>Aplikacija za Lovački savez Crne Gore razvijena u Node.js, PostgreSQL, HTML, CSS i JavaScript.</p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">⚙️</span>Program za Tehnolux</h3>
+                <p>Kompletan poslovni program razvijen koji se koristi u toj firmi.</p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🎫</span>Ticketing sistem - MT Computers D.O.O</h3>
+                <p>Ticketing sajt za firmu MT Computers D.O.O rađen u PHP.</p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">💻</span>Web Kutak</h3>
+                <p>Moj portfolio i business sajt.</p>
+                <p><a href="https://webkutak.com" class="project-link" target="_blank">webkutak.com</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🍷</span>Vinarija Bojanović</h3>
+                <p>Web sajt za lokalnu vinariju koja se nalazi u Berima.</p>
+                <p><a href="https://vinarijabojanovic.com" class="project-link" target="_blank">vinarijabojanovic.com</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">⛵</span>Carevo Skadar Lake</h3>
+                <p>Turistički sajt za vožnje brodom na Skadarskom jezeru.</p>
+                <p><a href="https://carevoskadarlake.com" class="project-link" target="_blank">carevoskadarlake.com</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🛶</span>Noah's Ark Skadar Lake</h3>
+                <p>Turistički sajt za vožnje čamcem na Skadarskom jezeru.</p>
+                <p><a href="https://noahsarkskadarlake.com" class="project-link" target="_blank">noahsarkskadarlake.com</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🧼</span>Maya's Cleaning</h3>
+                <p>Profesionalna firma za čišćenje u inostranstvu.</p>
+                <p><a href="https://mayascleaning.com" class="project-link" target="_blank">mayascleaning.com</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🚗</span>Elite Ride</h3>
+                <p>Luksuzna limuzina i taxi usluga.</p>
+                <p><a href="https://eliteride.me" class="project-link" target="_blank">eliteride.me</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🎮</span>Game Library React</h3>
+                <p>Eliminacioni React projekat u sklopu prakse za firmu Cortex.</p>
+                <p><a href="https://github.com/sirac007006/projektni-zadatak-react" class="project-link" target="_blank">GitHub Repository</a></p>
+            </div>
+
+            <div class="project-item">
+                <h3><span class="emoji">🌐</span>Mazor Shop</h3>
+                <p>E-commerce sajt za lokalni brend.</p>
+                <p><a href="https://mazorshop.me" class="project-link" target="_blank">mazorshop.me</a></p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="emoji">🛠️</span>Veštine</h2>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h4>Frontend</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">HTML</span>
+                        <span class="skill-tag">CSS</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">Bootstrap</span>
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">EJS</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h4>Backend</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">Express.js</span>
+                        <span class="skill-tag">PHP</span>
+                        <span class="skill-tag">Laravel</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h4>Baze podataka</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MySQL</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h4>Ostalo</h4>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">Design</span>
+                        <span class="skill-tag">REST API</span>
+                        <span class="skill-tag">SEO</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="emoji">✨</span>Lične osobine</h2>
+            <div class="qualities-grid">
+                <div class="quality-item">
+                    <strong>Odgovornost</strong>
+                    <p>Svakom projektu pristupam ozbiljno i posvećeno, poštujem rokove i trudim se da isporučim kvalitetan rezultat.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Upornost</strong>
+                    <p>Ne odustajem lako. Kada naiđem na problem, istražujem i trudim se dok ne pronađem rješenje.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Samostalnost</strong>
+                    <p>Znam da radim sam i da organizujem svoje vrijeme, ali sam takođe i timski igrač kada je to potrebno.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Preciznost</strong>
+                    <p>Obraćam pažnju na detalje, bilo da se radi o dizajnu, funkcionalnosti ili kodu.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Komunikativnost</strong>
+                    <p>Lako se uklapam u tim, dobro komuniciram sa klijentima i slušam njihove potrebe.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Spremnost na učenje</strong>
+                    <p>Pratim trendove i stalno učim nove tehnologije i alate.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Kreativnost</strong>
+                    <p>Uvijek tražim rješenja koja nisu samo funkcionalna, već i estetski prijatna i korisniku jednostavna.</p>
+                </div>
+                <div class="quality-item">
+                    <strong>Organizovanost</strong>
+                    <p>Znam da rasporedim zadatke i vodim projekat od početka do kraja.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2><span class="emoji">🎯</span>Cilj</h2>
+            <p style="font-size: 1.1em; line-height: 1.9; color: #d4d4d8;">
+                Moj cilj je da nastavim da rastem kao web developer, učim nove tehnologije i doprinosim kvalitetnim projektima. Otvoren sam za freelance angažmane, honorarne poslove, kao i za stalni rad u timu gdje mogu dodatno učiti i doprinositi.
+            </p>
+        </div>
+
+        <footer>
+            <div class="contact-info">
+                <h3>📧 Kontakt</h3>
+                <p style="margin: 10px 0;">📧 Email: <a href="mailto:webkutakpg@gmail.com">webkutakpg@gmail.com</a></p>
+                <p style="margin: 10px 0;">📱 Telefon: <a href="tel:+38267844223">+382 67 844 223</a></p>
+                <p style="margin: 10px 0;">📷 Instagram: <a href="https://instagram.com/webkutak" target="_blank">@webkutak</a></p>
+                <p>🌐 Web: <a href="https://webkutak.com" target="_blank">webkutak.com</a></p>
+            </div>
+            <p style="margin-top: 40px; opacity: 0.7;">© 2025 Marko Ivanović - Web Developer</p>
+        </footer>
+    </div>
+
+    <script>
+        // Scroll progress indicator
+        window.addEventListener('scroll', () => {
+            const scrollIndicator = document.getElementById('scrollIndicator');
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrolled = (window.scrollY / documentHeight) * 100;
+            scrollIndicator.style.width = scrolled + '%';
+        });
+
+        // Smooth reveal on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(30px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
