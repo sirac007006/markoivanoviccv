@@ -11,6 +11,11 @@
             box-sizing: border-box;
         }
 
+        html {
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
         body {
             font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
             line-height: 1.6;
@@ -371,6 +376,22 @@
             color: #60a5fa;
         }
 
+        /* --- Project images: 4:5 aspect ratio, responsive --- */
+        .project-images {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .project-images img {
+            width: 160px;
+            aspect-ratio: 4 / 5;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.2em;
@@ -391,8 +412,34 @@
             .skills-grid, .qualities-grid {
                 grid-template-columns: 1fr;
             }
+
+            /* Disable hover transforms on mobile — prevents scroll jank */
+            .section:hover {
+                transform: none;
+            }
+
+            .experience-item:hover, .project-item:hover {
+                transform: none;
+            }
+
+            .quality-item:hover {
+                transform: none;
+            }
+
+            .skill-category:hover {
+                transform: none;
+            }
+
+            .skill-tag:hover {
+                transform: none;
+            }
+
+            .project-images img {
+                width: 140px;
+            }
         }
 
+        /* --- Scroll indicator fix --- */
         .scroll-indicator {
             position: fixed;
             top: 0;
@@ -401,7 +448,8 @@
             background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
             width: 0%;
             z-index: 1000;
-            transition: width 0.1s ease;
+            will-change: width;
+            pointer-events: none;
         }
     </style>
 </head>
@@ -459,8 +507,8 @@
                 <p style="margin-top: 10px;"><strong>Moja uloga:</strong> Frontend Developer (React Native)</p>
                 <p style="margin-top: 6px;"><strong>Stack:</strong> React Native · React · NestJS · Prisma · PostgreSQL · Socket.IO · Agora · Gemini AI</p>
                 
-                <div class="project-images" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
-                    <img src="parentivo.png" alt="Parentivo Aplikacija" style="width: 220px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="project-images">
+                    <img src="parentivo.png" alt="Parentivo Aplikacija">
                 </div>
                 
                 <span class="achievement-badge" style="margin-top: 14px; display: inline-block;">🏅 Top 5 – 9. m:tel App Contest</span>
@@ -479,8 +527,8 @@
                 </ul>
                 <p style="margin-top: 10px;"><strong>Stack:</strong> React Native · Node.js · JavaScript</p>
                 
-                <div class="project-images" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
-                    <img src="vox.png" alt="VOX Servis Aplikacija" style="width: 220px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="project-images">
+                    <img src="vox.png" alt="VOX Servis Aplikacija">
                 </div>
             </div>
 
@@ -488,8 +536,8 @@
                 <h3><span class="emoji">🎯</span>Program za Lovački savez Crne Gore</h3>
                 <p>Aplikacija za Lovački savez Crne Gore razvijena u Node.js, PostgreSQL, HTML, CSS i JavaScript.</p>
                 
-                <div class="project-images" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
-                    <img src="lovacki1.jpg" alt="Lovački savez" style="width: 220px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="project-images">
+                    <img src="lovacki1.jpg" alt="Lovački savez">
                 </div>
             </div>
 
@@ -497,8 +545,8 @@
                 <h3><span class="emoji">⚙️</span>Program za Tehnolux</h3>
                 <p>Kompletan poslovni program razvijen koji se koristi u toj firmi.</p>
                 
-                <div class="project-images" style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px;">
-                    <img src="tehnolux.png" alt="Tehnolux Program" style="width: 220px; height: 140px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+                <div class="project-images">
+                    <img src="tehnolux.png" alt="Tehnolux Program">
                 </div>
             </div>
 
@@ -656,16 +704,36 @@
     </div>
 
     <script>
-        // Scroll progress indicator
-        window.addEventListener('scroll', () => {
-            const scrollIndicator = document.getElementById('scrollIndicator');
-            const windowHeight = window.innerHeight;
-            const documentHeight = document.documentElement.scrollHeight;
-            const scrollTop = window.scrollY;
-            
-            const scrolled = (scrollTop / (documentHeight - windowHeight)) * 100;
-            scrollIndicator.style.width = scrolled + '%';
-        });
+        // Scroll progress indicator — mobile-safe version
+        (function() {
+            const indicator = document.getElementById('scrollIndicator');
+            let ticking = false;
+
+            function updateScroll() {
+                const docHeight = Math.max(
+                    document.body.scrollHeight,
+                    document.documentElement.scrollHeight
+                );
+                const winHeight = window.innerHeight;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const scrollable = docHeight - winHeight;
+
+                if (scrollable > 0) {
+                    const pct = Math.min(Math.max((scrollTop / scrollable) * 100, 0), 100);
+                    indicator.style.width = pct + '%';
+                } else {
+                    indicator.style.width = '0%';
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', function() {
+                if (!ticking) {
+                    requestAnimationFrame(updateScroll);
+                    ticking = true;
+                }
+            }, { passive: true });
+        })();
     </script>
 </body>
 </html>
